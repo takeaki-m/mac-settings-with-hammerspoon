@@ -1,54 +1,28 @@
--- [[
-cf
-https://mac-ra.com/hammerspoon-command-eikana02://mac-ra.com/hammerspoon-command-eikana02/
-https://qiita.com/mishiwata1015/items/fb7527e5b45f84a90eec
-]]
+hs.window.animationDuration = 0
+units = {
+  right50       = { x = 0.50, y = 0.00, w = 0.50, h = 1.00 },
+  right70       = { x = 0.30, y = 0.00, w = 0.70, h = 1.00 },
+  left50        = { x = 0.00, y = 0.00, w = 0.50, h = 1.00 },
+  left30        = { x = 0.00, y = 0.00, w = 0.30, h = 1.00 },
+  top50         = { x = 0.00, y = 0.00, w = 1.00, h = 0.50 },
+  bot50         = { x = 0.00, y = 0.50, w = 1.00, h = 0.50 },
+  upright     = { x = 0.50, y = 0.00, w = 0.50, h = 0.50 },
+  botright    = { x = 0.50, y = 0.50, w = 0.50, h = 0.50 },
+  upleft      = { x = 0.00, y = 0.00, w = 0.50, h = 0.50 },
+  botleft     = { x = 0.00, y = 0.50, w = 0.50, h = 0.50 },
+  maximum       = { x = 0.00, y = 0.00, w = 1.00, h = 1.00 }
+}
 
--- [[
-check current input source name
-ctrl + cmd + ↓
-]]
-hs.hotkey.bind({"ctrl", "cmd"}, "down", function()
-    -- local method = hs.keycodes.currentMethod()
-    local method = hs.keycodes.currentLayout()
-    hs.alert.show(method)
-end)
-
-
-
--- [[
-change input source with command key
-right-command -> Japanese
-left-command -> ABC
-]]
-local simpleCmd = false
-local map = hs.keycodes.map
-
-local function kanaSwitchEvent(event)
-    local c = event:getKeyCode()
-    local f = event:getFlags()
-    if event:getType() == hs.eventtap.event.types.keyDown then
-        if f['cmd'] then
-            simpleCmd = true
-        end
-    elseif event:getType() == hs.eventtap.event.types.flagsChanged then
-        if not f['cmd'] then
-            if simpleCmd == false then
-                if c == map['cmd'] then
-                    hs.keycodes.setLayout("ABC")
-                elseif c == map['rightcmd'] then
-                    hs.keycodes.setMethod('Hiragana')
-                end
-            end
-            simpleCmd = false
-        end
-    end
-end
-
-kanaSwitcher = hs.eventtap.new(
-    {hs.eventtap.event.types.keyDown, hs.eventtap.event.types.flagsChanged},
-    kanaSwitchEvent
-    )
-kanaSwitcher:start()
-
+mash = { 'ctrl', 'cmd' }
+hs.hotkey.bind(mash, 'l', function() hs.window.focusedWindow():move(units.right50,    nil, true) end)
+hs.hotkey.bind(mash, 'h', function() hs.window.focusedWindow():move(units.left50,     nil, true) end)
+hs.hotkey.bind(mash, 'k', function() hs.window.focusedWindow():move(units.top50,      nil, true) end)
+hs.hotkey.bind(mash, 'j', function() hs.window.focusedWindow():move(units.bot50,      nil, true) end)
+hs.hotkey.bind(mash, ']', function() hs.window.focusedWindow():move(units.upright,  nil, true) end)
+hs.hotkey.bind(mash, '[', function() hs.window.focusedWindow():move(units.upleft,   nil, true) end)
+hs.hotkey.bind(mash, ';', function() hs.window.focusedWindow():move(units.botleft,  nil, true) end)
+hs.hotkey.bind(mash, "'", function() hs.window.focusedWindow():move(units.botright, nil, true) end)
+hs.hotkey.bind(mash, 'm', function() hs.window.focusedWindow():move(units.maximum,    nil, true) end)
+hs.hotkey.bind(mash, 'n', function() hs.window.focusedWindow():moveToScreen(hs.window.focusedWindow():screen():next(), false, true, 0) end)
+hs.hotkey.bind(mash, 'p', function() hs.window.focusedWindow():moveToScreen(hs.window.focusedWindow():screen():previous(), false, true, 0) end)
 
